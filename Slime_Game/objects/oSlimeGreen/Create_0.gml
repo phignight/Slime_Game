@@ -4,9 +4,9 @@ grv = 0.4;
 fric = 0.2;
 jumpsp = 8;
 walksp = 4;
-hp = 200;
-max_hp = 200;
-injured_timer = 5;
+hp = 600;
+max_hp = 600;
+injured_timer = 8;
 
 _debug_move = 0
 
@@ -21,6 +21,7 @@ idle_sprite = sSlimeGreenIdle;
 walk_sprite = sSlimeGreenWalk;
 sleep_sprite = sSlimeGreenSleep;
 dance_sprite = sSlimeGreenDance;
+death_anim = deat;
 dead_sprite = sSlimeGreenDance; // change later
 injured_sprite = sSlimeGreenSleep;
 

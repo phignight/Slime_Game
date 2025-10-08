@@ -5,6 +5,31 @@ var key_jump = keyboard_check(vk_space);
 var move = key_right - key_left;
 _debug_move = move
 
+// Death State
+if (dead == true) {
+	// Let splash animation play
+	sprite_index = death_anim;
+	image_xscale = 2;
+    image_yscale = 2;
+	
+    // Check if death animation has finished playing
+    if (image_index >= image_number - 1) {
+        // Respawn
+        x = 96;
+        y = 480.40;
+        hp = max_hp;
+        injured = false;
+        injured_timer = 0;
+        dead = false;
+        image_index = 0;
+		image_speed = 1;
+		image_xscale = 1;
+		image_yscale = 1;
+    }
+    // Skip the rest of the code while dead
+    exit;
+}
+
 if (move != 0) {
 	hsp = move * walksp;
     // X Sprite Direction
@@ -14,28 +39,21 @@ if (move != 0) {
     hsp = lerp(hsp, 0, fric);
 }
 
-// Death State
-if (dead == true) {
-	x = 96;
-	y = 480.40;
-	hp = max_hp;
-	injured = false;
-	injured_timer = 0;
-	dead = false;
-}
-
 // Injured State
 if (injured == true) {
     injured_timer--;
     if (injured_timer <= 0) {
         injured = false;
+		injured_timer = 0;
     }
 }
 
+// Debug (Delete later)
 show_debug_message("Dead: " + string(dead));
 show_debug_message("Injured: " + string(injured));
 show_debug_message("HP: " + string(hp));
 show_debug_message("HSP: " + string(hsp));
+show_debug_message("VSP: " + string(vsp));
 show_debug_message("Move: " + string(move));
 show_debug_message("X: " + string(x));
 show_debug_message("Y: " + string(y));
@@ -50,24 +68,80 @@ if (key_jump && place_meeting(x, y + 1, tilemap)) {
 }
 
 // Horizontal Collision
-if (place_meeting(x+hsp,y,tilemap)) { // Collision with tiles
-	while (!place_meeting(x+sign(hsp),y,tilemap)) {
-		x = x + sign(hsp)
+if (hsp != 0) {
+	var steps = abs(hsp);
+	repeat(steps) {
+		if (!place_meeting(x + sign(hsp), y, tilemap)) {
+			x += sign(hsp);
+		} else {
+			hsp = 0;
+			break;
+		}
 	}
-	hsp = 0;
-} else if (x+hsp < 0) or (x+hsp > room_width) { // Boundaries of room
+}
+
+// Boundaries of Room
+var spr_width = abs(sprite_width);
+x = clamp(x, spr_width/2, room_width - spr_width/2);
+if (x == spr_width/2 || x == room_width - spr_width/2) {
 	hsp = 0;
 }
 
 // Vertical Collision
-if (place_meeting(x,y+vsp,tilemap)) { // Collision with tiles
-	while (!place_meeting(x,y+sign(vsp),tilemap)) {
-		y = y + sign(vsp)
+if (vsp != 0) {
+	var steps = abs(vsp);
+	repeat(steps) {
+		if (!place_meeting(x, y + sign(vsp), tilemap)) {
+			y += sign(vsp);
+		} else {
+			vsp = 0;
+			break;
+		}
 	}
+}
+
+// Boundaries of Room
+y = clamp(y, sprite_height/2, room_height - sprite_height/2);
+if (y == sprite_height/2) {
 	vsp = 0;
-} else if (y+hsp < 0) or (y+vsp > room_height + sprite_height) { // Boundaries of room
-	vsp = 0;
+} else if (y == room_height - sprite_height/2) {
 	dead = true;
+	vsp = 0;
+}
+
+// -- Obstacle/Enemy Damage --
+if(instance_exists(oBomb)){
+	if (oBomb.go_off == true) {
+		injured = true;
+		hp -= (oBomb.damage/oBomb.cooldown);
+		// bounce slime off of
+		hsp = sign(x - oBomb.x) * 12; // Push away from enemy
+        vsp = -6; // Bounce up
+	}
+}
+
+if(instance_exists(oEnemy)){
+    var enemy_collision = place_meeting(x, y, oEnemy);
+    
+    if (enemy_collision && !injured) {
+        injured = true;
+		if injured_timer <= 0 {
+			hp -= oEnemy.damage;
+		}
+		
+		//TODO: enemy only deals damage if hit from any but y direction. jumping on top is safe
+        
+        // Knockback away from enemy
+        hsp = sign(x - oEnemy.x) * 8; // Push away from enemy
+        vsp = -4; // Bounce up
+    }
+}
+
+if hp < 0 {
+	dead = true;
+} else {
+	// flash sprite to show damage
+	// health bar goes down
 }
 
 // Animation
@@ -82,42 +156,3 @@ if (vsp < 0) {
 } else {
 	sprite_index = idle_sprite;
 }
-
-// -- Obstacle/Enemy Damage --
-if(instance_exists(oBomb)){
-	if (oBomb.go_off == true) {
-		injured = true;
-		hp -= (oBomb.damage/oBomb.cooldown);
-		// bounce slime off of
-	}
-}
-
-if(instance_exists(oEnemy)){
-    var enemy_collision = place_meeting(x, y, oEnemy);
-    
-    if (enemy_collision && !injured) { 
-        show_debug_message("ENEMY HIT!")
-        injured = true;
-        //injured_timer = 60;
-        hp -= oEnemy.damage;
-		
-		//TODO: enemy only deals damage if hit them from any but y direction. jumping on top is safe
-        
-        // Knockback away from enemy
-        hsp = sign(x - oEnemy.x) * 4; // Push away from enemy
-        vsp = -4; // Bounce up
-    }
-}
-
-if hp < 0 {
-	dead = true;
-}
-//else {
-	// flash sprite to show damage
-	// health bar goes down
-//}
-
-
-// Update Position
-x = x + hsp;
-y = y + vsp;
