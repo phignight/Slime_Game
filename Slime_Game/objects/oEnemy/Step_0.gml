@@ -13,23 +13,26 @@ if (hsp != 0) {
 }
 
 // Horizontal Collision
-if (place_meeting(x+hsp,y,tilemap)) { // Collision with tiles
+if (place_meeting(x+hsp,y,tilemap)) { // X Collision with tiles
 	movement_direction *= -1;
 	while (!place_meeting(x+sign(hsp),y,tilemap)) {
 		x = x + sign(hsp);
 	}
 	hsp = 0;
 } else if (x+hsp < 0) or (x+hsp > room_width) { // Boundaries of room
+	movement_direction *= -1;
+	x = x + sign(hsp);
 	hsp = 0;
 }
 
-// Collision with slimes
-if collide == true {
-	fric = 0;
-	walksp = 0;
-} else {
-	fric = 0.17;
-	walksp = 3;
+// Ledge detection
+var ledge_check_x = x + movement_direction * 2; // Look slightly ahead (adjust 4 as needed)
+var ledge_check_y = y + sprite_height;
+
+if (!place_meeting(ledge_check_x, ledge_check_y, tilemap)) {
+	movement_direction *= -1;
+	hsp = 0;
+	y -= 3;
 }
 
 // Vertical Collision
@@ -40,7 +43,6 @@ if (place_meeting(x,y+vsp,tilemap)) { // Collision with tiles
 	vsp = 0;
 } else if (y+hsp < 0) or (y+vsp > room_height + sprite_height) { // Boundaries of room
 	vsp = 0;
-	show_debug_message("dead :(")
 }
 
 // Animation

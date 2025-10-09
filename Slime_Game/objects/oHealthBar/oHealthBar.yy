@@ -31,8 +31,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"sHealth",
-    "path":"sprites/sHealth/sHealth.yy",
+    "name":"sHealth_better",
+    "path":"sprites/sHealth_better/sHealth_better.yy",
   },
   "spriteMaskId":null,
   "visible":true,

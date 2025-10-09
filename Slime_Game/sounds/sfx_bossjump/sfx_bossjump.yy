@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"sfx_bossjump",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":0.14312924,
+  "name":"sfx_bossjump",
+  "parent":{
+    "name":"Sounds",
+    "path":"folders/Sounds.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"sfx_bossjump.wav",
+  "type":0,
+  "volume":1.0,
+}

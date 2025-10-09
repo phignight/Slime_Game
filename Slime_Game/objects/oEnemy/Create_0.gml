@@ -3,8 +3,8 @@ vsp = 0;
 grv = 0.39;
 fric = 0.17;
 jumpsp = 4;
-walksp = 3;
-damage = 50;
+walksp = 1;
+damage = 100;
 
 movement_direction = 1;
 collide = false;

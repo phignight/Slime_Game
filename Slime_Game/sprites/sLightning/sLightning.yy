@@ -30,7 +30,7 @@
   ],
   "name":"sLightning",
   "nineSlice":null,
-  "origin":0,
+  "origin":4,
   "parent":{
     "name":"Obstacles",
     "path":"folders/Sprites/Obstacles.yy",
@@ -57,7 +57,7 @@
     "eventStubScript":null,
     "eventToFunction":{},
     "length":8.0,
-    "lockOrigin":false,
+    "lockOrigin":true,
     "moments":{
       "$KeyframeStore<MomentsEventKeyframe>":"",
       "Keyframes":[],
@@ -105,8 +105,8 @@
     ],
     "visibleRange":null,
     "volume":1.0,
-    "xorigin":0,
-    "yorigin":0,
+    "xorigin":128,
+    "yorigin":128,
   },
   "swatchColours":null,
   "swfPrecision":0.5,
