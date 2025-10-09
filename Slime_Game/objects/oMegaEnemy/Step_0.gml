@@ -1,4 +1,13 @@
-// Proposed speed
+// Boundary check FIRST
+var spr_width = abs(sprite_width);
+var half_width = spr_width/2;
+
+// Check if we're about to go out of bounds
+if (x + movement_direction * walksp < half_width || x + movement_direction * walksp > room_width - half_width) {
+    movement_direction *= -1;
+}
+
+// THEN calculate speed with corrected direction
 hsp = movement_direction * walksp;
 
 if damage_taken > 0 {
@@ -15,9 +24,6 @@ if damage_taken > 0 {
 		instance_destroy();
 	}
 }
-
-// Boolean
-//collide = place_meeting(x+hsp,y,oSlimeGreen);
 
 // Gravity
 vsp += grv;
@@ -36,11 +42,8 @@ if (place_meeting(x+hsp,y,tilemap)) { // X Collision with tiles
 	hsp = 0;
 }
 
-var spr_width = abs(sprite_width);
-x = clamp(x, spr_width/2, room_width - spr_width/2);
-if (x == spr_width/2 || x == room_width - spr_width/2) {
-	movement_direction *= -1;
-}
+// Clamp position (just as safety)
+x = clamp(x, half_width, room_width - half_width);
 
 // Vertical Collision
 if (place_meeting(x,y+vsp,tilemap)) { // Collision with tiles
@@ -60,7 +63,6 @@ if (vsp < 0) {
 } else {
 	sprite_index = idle_sprite;
 }
-
 
 // Update Position
 x = x + hsp;
